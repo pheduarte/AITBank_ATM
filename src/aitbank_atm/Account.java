@@ -4,6 +4,8 @@ package aitbank_atm;
 
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 public abstract class Account {
 
     // Properties for all accounts
@@ -14,10 +16,22 @@ public abstract class Account {
 
     // Implement deposit capability
     public void deposit(double dep) {
-        
+        try {
+            if (dep <= 0) {
+                JOptionPane.showMessageDialog(null, this,
+                        "Amount must be a positive number.", 0);
+                return;
+            }
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, this,
+                    "Please enter a valid number.",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         balance += dep;
     }
-    
+
     public double getBalance() {
         return balance;
     }
@@ -25,8 +39,6 @@ public abstract class Account {
     // Implement withdrawal capability
     public void withdrawal(Scanner scanner) {
         double value;
-
-        System.out.println("Please informe the amount you want to withdraw: ");
 
         value = scanner.nextDouble();
         scanner.nextLine(); // Clear scanner
@@ -54,6 +66,6 @@ public abstract class Account {
 
     // Calculate compound interest
     public abstract double compound();
-    
+
     public abstract void limit();
 }
