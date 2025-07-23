@@ -32,7 +32,7 @@ public class AtmPanel extends JPanel {
         setBackground(Color.LIGHT_GRAY);
 
         // --- Info bar (account name & balance) ---
-        JPanel infoBar = new JPanel(new GridLayout(1, 3, 8, 8));
+        JPanel infoBar = new JPanel(new GridLayout(1, 2, 8, 8));
         infoBar.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         infoBar.add(nameLabel);
         infoBar.add(account);
@@ -76,7 +76,7 @@ public class AtmPanel extends JPanel {
         mainPanel2.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         // Creates a keypad
-        JPanel keypad = new JPanel(new GridLayout(4, 3, 1, 1));
+        JPanel keypad = new JPanel(new GridLayout(5, 3, 1, 1));
         JButton btn1 = new JButton("1");
         JButton btn2 = new JButton("2");
         JButton btn3 = new JButton("3");
@@ -88,6 +88,7 @@ public class AtmPanel extends JPanel {
         JButton btn9 = new JButton("9");
         JButton btnC = new JButton("C");
         JButton btn0 = new JButton("0");
+        JButton btnD = new JButton(".");
         JButton btnE = new JButton("Enter");
 
         ActionListener digitListener = e -> {
@@ -106,6 +107,7 @@ public class AtmPanel extends JPanel {
         btn7.addActionListener(digitListener);
         btn8.addActionListener(digitListener);
         btn9.addActionListener(digitListener);
+        btnD.addActionListener(digitListener);
 
         btnC.addActionListener(e -> {
             input.setLength(0);
@@ -136,8 +138,9 @@ public class AtmPanel extends JPanel {
         keypad.add(btn7);
         keypad.add(btn8);
         keypad.add(btn9);
-        keypad.add(btnC);
         keypad.add(btn0);
+        keypad.add(btnD);
+        keypad.add(btnC);
         keypad.add(btnE);
 
         mainPanel2.add(keypad);
@@ -196,7 +199,7 @@ public class AtmPanel extends JPanel {
 
     public void balanceOp(String account) {
         switch (account) {
-            case "Check" -> display.setText(Check.showInfo());
+            case "Check" -> display.setText("Check.showInfo()");
             case "Savings" -> newSavings.deposit(amount);
             case "Fixed" -> newFixed.deposit(amount);
             case "Net Savings" -> newNet.deposit(amount);

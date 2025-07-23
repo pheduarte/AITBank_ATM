@@ -3,10 +3,8 @@ package aitbank_atm;
 
 public class Check extends Account {
    @Override
-   public static String showInfo() {
-
-      String info = String.valueOf(balance);
-      return info;
+   public String showInfo() {
+      return String.format("Type: %s, Balance: $%,.2f", getClass().getSimpleName(), balance);
    }
 
    // Calculate compound interest

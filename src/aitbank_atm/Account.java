@@ -16,19 +16,13 @@ public abstract class Account {
 
     // Implement deposit capability
     public void deposit(double dep) {
-        try {
-            if (dep <= 0) {
-                JOptionPane.showMessageDialog(null, this,
-                        "Amount must be a positive number.", 0);
-                return;
-            }
 
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, this,
-                    "Please enter a valid number.",
-                    JOptionPane.ERROR_MESSAGE);
+        if (dep <= 0) {
+            JOptionPane.showMessageDialog(null,
+                    "Amount must be a positive number.");
             return;
         }
+
         balance += dep;
     }
 
@@ -37,24 +31,24 @@ public abstract class Account {
     }
 
     // Implement withdrawal capability
-    public void withdrawal(Scanner scanner) {
-        double value;
+    public boolean withdrawal(double value) {
 
-        value = scanner.nextDouble();
-        scanner.nextLine(); // Clear scanner
-
-        // Check if the balance is sufficient
+        if (value <= 0)
+            return false;
         if (value > balance) {
-
-            return;
+            return false; // or throw InsufficientFundsException
         }
-
-        // Check if the available notes 20, 50, or 100
-        if (value % 20 == 0 || value % 50 == 0 || value % 100 == 0) {
-            System.out.println("Take your money");
+        if (!isDispensable(value)) {
+            return false; // UI can show “Only $20/$50/$100...”
         }
-
         balance -= value;
+        return true;
+    }
+
+    // Check if the available notes 20, 50, or 100
+    private boolean isDispensable(double value) {
+        // simplest: require multiples of 10 or 20, or your exact rule:
+        return value % 20 == 0 || value % 50 == 0 || value % 100 == 0;
     }
 
     // Display account information
