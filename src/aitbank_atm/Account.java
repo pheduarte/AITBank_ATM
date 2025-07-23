@@ -45,15 +45,13 @@ public abstract class Account {
 
         // Check if the balance is sufficient
         if (value > balance) {
-            System.out.println("Insufficient balance");
+
             return;
         }
 
         // Check if the available notes 20, 50, or 100
         if (value % 20 == 0 || value % 50 == 0 || value % 100 == 0) {
             System.out.println("Take your money");
-        } else {
-            System.out.println("Only $20, $50, and $100 notes available from this ATM.");
         }
 
         balance -= value;
