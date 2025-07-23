@@ -57,8 +57,6 @@ public abstract class Account {
         }
 
         balance -= value;
-
-        System.out.println("Your new balance: " + balance);
     }
 
     // Display account information
