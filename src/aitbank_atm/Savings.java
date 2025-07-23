@@ -5,11 +5,6 @@ import java.util.Scanner;
 
 public class Savings extends Account {
 
-    @Override
-    public String showInfo() {
-        return "Saving account balance: $" + balance;
-    }
-
     // Calculate compound interest
     @Override
     public double compound() {
@@ -53,13 +48,4 @@ public class Savings extends Account {
         }
     }
 
-    @Override
-    public void deposit(double scanner) {
-        // System.out.println("Depositing to: " + this.getClass().getSimpleName());
-        // System.out.println("Plese informe the deposit amount: ");
-        // balance += scanner.nextDouble();
-        // scanner.nextLine();
-
-        // System.out.println("Your new balance: " + balance);
-    }
 }

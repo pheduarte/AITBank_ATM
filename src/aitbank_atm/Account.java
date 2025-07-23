@@ -8,6 +8,13 @@ import javax.swing.JOptionPane;
 
 public abstract class Account {
 
+    public enum WithdrawStatus {
+        OK,
+        NEGATIVE_AMOUNT,
+        INSUFFICIENT_FUNDS,
+        INVALID_NOTES
+    }
+
     // Properties for all accounts
     protected double balance = 0;
     public boolean isLimited;
@@ -30,20 +37,31 @@ public abstract class Account {
         return balance;
     }
 
-    // Implement withdrawal capability
-    public boolean withdrawal(double value) {
-
+    public WithdrawStatus withdraw(double value) {
         if (value <= 0)
-            return false;
-        if (value > balance) {
-            return false; // or throw InsufficientFundsException
-        }
-        if (!isDispensable(value)) {
-            return false; // UI can show “Only $20/$50/$100...”
-        }
+            return WithdrawStatus.NEGATIVE_AMOUNT;
+        if (value > balance)
+            return WithdrawStatus.INSUFFICIENT_FUNDS;
+        if (!isDispensable(value))
+            return WithdrawStatus.INVALID_NOTES;
         balance -= value;
-        return true;
+        return WithdrawStatus.OK;
     }
+
+    // Implement withdrawal capability
+    // public boolean withdrawal(double value) {
+
+    // if (value <= 0)
+    // return false;
+    // if (value > balance) {
+    // return false; // or throw InsufficientFundsException
+    // }
+    // if (!isDispensable(value)) {
+    // return false; // UI can show “Only //...”
+    // }
+    // balance -= value;
+    // return true;
+    // }
 
     // Check if the available notes 20, 50, or 100
     private boolean isDispensable(double value) {
@@ -52,7 +70,11 @@ public abstract class Account {
     }
 
     // Display account information
-    public abstract String showInfo();
+    public String showInfo() {
+        String saldo = String.valueOf(balance);
+
+        return saldo;
+    };
 
     // Calculate compound interest
     public abstract double compound();

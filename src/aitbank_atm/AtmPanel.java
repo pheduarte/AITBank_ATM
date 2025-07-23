@@ -17,8 +17,15 @@ public class AtmPanel extends JPanel {
     String accType = "";
     private final JLabel nameLabel = new JLabel("Welcome, Phelippe D.");
     private final JLabel account = new JLabel("Account: Check");
+    private final JLabel balanceLabel = new JLabel("Balance: $0.00");
     private final StringBuilder input = new StringBuilder();
     double amount;
+
+    private enum Op {
+        NONE, DEPOSIT, WITHDRAW, BALANCE
+    }
+
+    private Op pendingOp = Op.NONE;
 
     Check newCheck = new Check();
     Savings newSavings = new Savings();
@@ -32,10 +39,11 @@ public class AtmPanel extends JPanel {
         setBackground(Color.LIGHT_GRAY);
 
         // --- Info bar (account name & balance) ---
-        JPanel infoBar = new JPanel(new GridLayout(1, 2, 8, 8));
+        JPanel infoBar = new JPanel(new GridLayout(1, 3, 8, 8));
         infoBar.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         infoBar.add(nameLabel);
         infoBar.add(account);
+        infoBar.add(balanceLabel);
         add(infoBar, BorderLayout.NORTH);
 
         // Creates a main panel for a manageble layout
@@ -47,9 +55,9 @@ public class AtmPanel extends JPanel {
         displayPanel.add(display);
         display.setEditable(false);
         display.setHorizontalAlignment(JTextField.CENTER);
-        display.setFont(display.getFont().deriveFont(16f));
+        display.setFont(display.getFont().deriveFont(14f));
         display.setBackground(Color.lightGray);
-        display.setText("Welcome! Please select an operation");
+        display.setText("Welcome! Please select an account and operation");
 
         mainPanel.add(displayPanel);
 
@@ -119,8 +127,14 @@ public class AtmPanel extends JPanel {
                 return;
             try {
                 amount = Double.parseDouble(input.toString());
-                // use amount (deposit/withdraw/etc.)
-                // e.g. doDeposit(amount);
+
+                switch (pendingOp) {
+                    case DEPOSIT -> doDeposit();
+                    case WITHDRAW -> doWithdraw();
+                    default -> display.setText("Select an operation first.");
+                }
+                pendingOp = Op.NONE;
+
                 input.setLength(0); // reset after use
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Invalid number.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -152,13 +166,24 @@ public class AtmPanel extends JPanel {
         JButton btnBalance = new JButton("Balance");
         JButton btnExit = new JButton("Exit");
 
-        btnDeposit.addActionListener(e -> depositOp(accType, amount));
+        btnDeposit.addActionListener(e -> {
+            pendingOp = Op.DEPOSIT;
+            display.setText("Enter deposit amount:");
+            input.setLength(0);
+        });
         buttonsPanel.add(btnDeposit);
 
+        btnWithdraw.addActionListener(e -> {
+            pendingOp = Op.WITHDRAW;
+            display.setText("Enter withdraw amount:");
+            display.setFont(display.getFont().deriveFont(18f));
+            input.setLength(0);
+        });
         buttonsPanel.add(btnWithdraw);
-        btnBalance.addActionListener(e -> showBalance(newCheck.showInfo()));
 
-        btnBalance.addActionListener(digitListener);
+        btnBalance.addActionListener(e -> display.setText(String.format("%s balance: $%,.2f", accType,
+                currentAccount().getBalance())));
+
         buttonsPanel.add(btnBalance);
         btnExit.addActionListener(e -> System.exit(0));
         buttonsPanel.add(btnExit);
@@ -173,37 +198,58 @@ public class AtmPanel extends JPanel {
 
     public void setAccType(String t) {
         accType = t;
-        account.setText("Account: " + accType);
+        account.setText("Account: " + t);
+        updateBalanceLabel();
     }
 
-    public void showBalance(String b) {
-        String accountB = b;
+    // private void showBalance() {
+    // Account acc = currentAccount();
+    // display.setText(String.format("%s balance: $%,.2f", accType,
+    // acc.getBalance()));
+    // updateBalanceLabel();
+    // }
 
-        if ("Savings".equals(accountB)) {
-            display.setText(accountB + " balance: $");
-        }
+    private void doDeposit() {
+        Account acc = currentAccount();
+        acc.deposit(amount);
+        display.setText(String.format("$%,.2f deposited to %s.", amount, accType));
+        updateBalanceLabel();
     }
 
-    public void depositOp(String account, double value) {
-        double amount = value;
-        display.setText("Please enter the amount: ");
+    private void doWithdraw() {
+        Account acc = currentAccount();
+        Account.WithdrawStatus st = acc.withdraw(amount);
 
-        switch (account) {
-            case "Check" -> newCheck.deposit(amount);
-            case "Savings" -> newSavings.deposit(amount);
-            case "Fixed" -> newFixed.deposit(amount);
-            case "Net Savings" -> newNet.deposit(amount);
+        switch (st) {
+            case OK -> display.setText(String.format("$%,.2f withdrawn from %s.", amount, accType));
+            case NEGATIVE_AMOUNT -> JOptionPane.showMessageDialog(this,
+                    "Amount must be positive.", "Invalid amount", JOptionPane.WARNING_MESSAGE);
+            case INSUFFICIENT_FUNDS -> JOptionPane.showMessageDialog(this,
+                    "Insufficient funds.", "Error", JOptionPane.ERROR_MESSAGE);
+            case INVALID_NOTES -> JOptionPane.showMessageDialog(this,
+                    "Only $20, $50 and $100 notes available.", "Invalid notes", JOptionPane.WARNING_MESSAGE);
         }
-
+        // if (acc.withdrawal(amount)) {
+        // display.setText(String.format("$%,.2f withdrawn from %s.", amount, accType));
+        // } else {
+        // display.setText("Insufficient funds");
+        // }
+        updateBalanceLabel();
     }
 
-    public void balanceOp(String account) {
-        switch (account) {
-            case "Check" -> display.setText("Check.showInfo()");
-            case "Savings" -> newSavings.deposit(amount);
-            case "Fixed" -> newFixed.deposit(amount);
-            case "Net Savings" -> newNet.deposit(amount);
-        }
+    private Account currentAccount() {
+        return switch (accType) {
+            case "Check" -> newCheck;
+            case "Savings" -> newSavings;
+            case "Fixed" -> newFixed;
+            case "Net Savings" -> newNet;
+            default -> newCheck; // fallback
+        };
+    }
+
+    private void updateBalanceLabel() {
+        Account acc = currentAccount();
+        balanceLabel.setText(String.format("Balance: $%,.2f", acc.getBalance()));
     }
 
 }
