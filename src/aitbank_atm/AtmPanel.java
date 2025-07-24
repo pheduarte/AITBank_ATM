@@ -4,6 +4,7 @@ package aitbank_atm;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.List;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
@@ -37,12 +38,12 @@ public class AtmPanel extends JPanel {
 
     // Helps with the grid
     public AtmPanel() {
-        JPanel generalPanel = new JPanel(new GridLayout(2, 1, 8, 8));
+        JPanel topPanel = new JPanel(new GridLayout(2, 1, 8, 8));
 
         setLayout(new BorderLayout(8, 8));
-        setBackground(Color.LIGHT_GRAY);
+        setBackground(Color.BLUE);
 
-        // Infobar account name and balance
+        // Infobar account name, account type, limit and balance
         JPanel infoBar = new JPanel(new GridLayout(1, 4, 8, 8));
         infoBar.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         infoBar.add(nameLabel);
@@ -67,7 +68,7 @@ public class AtmPanel extends JPanel {
         mainPanel.add(displayPanel);
 
         // Accounts buttons
-        JPanel accountPanel = new JPanel(new GridLayout(4, 1, 5, 5));
+        JPanel accountPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         JButton btnCheck = new JButton("Check");
         JButton btnFixed = new JButton("Fixed");
         JButton btnNet = new JButton("NetSavings");
@@ -84,14 +85,14 @@ public class AtmPanel extends JPanel {
 
         mainPanel.add(accountPanel);
 
-        generalPanel.add(mainPanel);
+        topPanel.add(mainPanel);
 
         JPanel mainPanel2 = new JPanel(new GridLayout(1, 1, 5, 5));
         mainPanel2.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         // Creates a keypad
         JPanel keypad = new JPanel(new GridLayout(5, 3, 1, 1));
-        keypad.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 30));
+
         JButton btn1 = new JButton("1");
         JButton btn2 = new JButton("2");
         JButton btn3 = new JButton("3");
@@ -101,11 +102,11 @@ public class AtmPanel extends JPanel {
         JButton btn7 = new JButton("7");
         JButton btn8 = new JButton("8");
         JButton btn9 = new JButton("9");
-        JButton btnC = new JButton("C");
+        JButton btnClear = new JButton("C");
         JButton btn0 = new JButton("0");
-        JButton btnD = new JButton(".");
-        JButton btnE = new JButton("Enter");
-        JButton btnL = new JButton("Limit");
+        JButton btnDigit = new JButton(".");
+        JButton btnEnter = new JButton("Enter");
+        JButton btnLimit = new JButton("Limit");
 
         // Adds each pressed button to a string
         ActionListener digitListener = e -> {
@@ -124,15 +125,17 @@ public class AtmPanel extends JPanel {
         btn7.addActionListener(digitListener);
         btn8.addActionListener(digitListener);
         btn9.addActionListener(digitListener);
-        btnD.addActionListener(digitListener);
+        btnDigit.addActionListener(digitListener);
 
         // Resets display
-        btnC.addActionListener(e -> {
+        btnClear.setForeground(Color.GRAY);
+        btnClear.addActionListener(e -> {
             input.setLength(0);
             display.setText("");
         });
 
-        btnE.addActionListener(e -> {
+        btnEnter.setForeground(Color.green);
+        btnEnter.addActionListener(e -> {
             if (input.length() == 0)
                 return;
             try {
@@ -155,11 +158,12 @@ public class AtmPanel extends JPanel {
             }
         });
 
-        btnL.addActionListener(e -> {
+        btnLimit.addActionListener(e -> {
             pendingOp = Op.LIMIT;
             display.setText("Enter daily withdrawal limit:");
             input.setLength(0);
         });
+        btnLimit.setForeground(Color.RED);
 
         keypad.add(btn1);
         keypad.add(btn2);
@@ -171,15 +175,15 @@ public class AtmPanel extends JPanel {
         keypad.add(btn8);
         keypad.add(btn9);
         keypad.add(btn0);
-        keypad.add(btnD);
-        keypad.add(btnC);
-        keypad.add(btnE);
-        keypad.add(btnL);
+        keypad.add(btnDigit);
+        keypad.add(btnClear);
+        keypad.add(btnEnter);
+        keypad.add(btnLimit);
 
         mainPanel2.add(keypad);
 
         // Creates button area
-        JPanel buttonsPanel = new JPanel(new GridLayout(4, 1, 5, 5));
+        JPanel buttonsPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         JButton btnDeposit = new JButton("Deposit");
         JButton btnWithdraw = new JButton("Withdraw");
         JButton btnBalance = new JButton("Balance");
@@ -214,8 +218,8 @@ public class AtmPanel extends JPanel {
         mainPanel2.add(buttonsPanel);
 
         // Adds main panels
-        generalPanel.add(mainPanel2);
-        add(generalPanel);
+        topPanel.add(mainPanel2);
+        add(topPanel);
     }
 
     // Setter for account type
