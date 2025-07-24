@@ -4,14 +4,7 @@
  */
 package aitbank_atm;
 
-import java.util.Scanner;
-
 public class NetSavings extends Account {
-
-    @Override
-    public String showInfo() {
-        return "Net Savings account balance: $" + balance;
-    }
 
     // Calculate compound interest
     @Override
@@ -20,11 +13,10 @@ public class NetSavings extends Account {
         return Math.pow(1 + (baseRate + bonus), 30.0 / 365);
     }
 
-    @Override
-    public void limit() {
+    // @Override
+    // public void limit() {
 
-        System.out.println("Account limit status: $10,000.00");
-        limitValue = 10000.00;
-    }
+    // limitValue = 10000.00;
+    // }
 
 }
