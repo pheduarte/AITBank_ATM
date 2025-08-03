@@ -9,7 +9,4 @@ public class Check extends Account {
       return 0;
    }
 
-   @Override
-   public void limit() {
-   }
 }

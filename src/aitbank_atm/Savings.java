@@ -1,8 +1,6 @@
 
 package aitbank_atm;
 
-import java.util.Scanner;
-
 public class Savings extends Account {
 
     // Calculate compound interest

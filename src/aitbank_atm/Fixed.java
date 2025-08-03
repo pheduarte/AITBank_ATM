@@ -1,8 +1,6 @@
 
 package aitbank_atm;
 
-import java.util.Scanner;
-
 public class Fixed extends Account {
 
     // Calculate compound interest for 6 months
@@ -12,7 +10,4 @@ public class Fixed extends Account {
         return Math.pow(1 + (baseRate + bonus), 180 / 365);
     }
 
-    @Override
-    public void limit() {
-    }
 }

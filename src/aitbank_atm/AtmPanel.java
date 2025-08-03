@@ -4,7 +4,6 @@ package aitbank_atm;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.List;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
@@ -41,7 +40,7 @@ public class AtmPanel extends JPanel {
         JPanel topPanel = new JPanel(new GridLayout(2, 1, 8, 8));
 
         setLayout(new BorderLayout(8, 8));
-        setBackground(Color.BLUE);
+        setBackground(Color.BLACK);
 
         // Infobar account name, account type, limit and balance
         JPanel infoBar = new JPanel(new GridLayout(1, 4, 8, 8));
@@ -52,7 +51,7 @@ public class AtmPanel extends JPanel {
         infoBar.add(limitLabel);
         add(infoBar, BorderLayout.NORTH);
 
-        // Creates a main panel for a manageble layout
+        // Creates a main panel for a manageable layout
         JPanel mainPanel = new JPanel(new GridLayout(1, 1, 5, 5));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
@@ -74,13 +73,13 @@ public class AtmPanel extends JPanel {
         JButton btnNet = new JButton("NetSavings");
         JButton btnSav = new JButton("Savings");
 
-        btnCheck.addActionListener(e -> setAccType("Check"));
+        btnCheck.addActionListener(_ -> setAccType("Check"));
         accountPanel.add(btnCheck);
-        btnSav.addActionListener(e -> setAccType("Savings"));
+        btnSav.addActionListener(_ -> setAccType("Savings"));
         accountPanel.add(btnSav);
-        btnFixed.addActionListener(e -> setAccType("Fixed"));
+        btnFixed.addActionListener(_ -> setAccType("Fixed"));
         accountPanel.add(btnFixed);
-        btnNet.addActionListener(e -> setAccType("Net Savings"));
+        btnNet.addActionListener(_ -> setAccType("Net Savings"));
         accountPanel.add(btnNet);
 
         mainPanel.add(accountPanel);
@@ -129,13 +128,13 @@ public class AtmPanel extends JPanel {
 
         // Resets display
         btnClear.setForeground(Color.GRAY);
-        btnClear.addActionListener(e -> {
+        btnClear.addActionListener(_ -> {
             input.setLength(0);
             display.setText("");
         });
 
         btnEnter.setForeground(Color.green);
-        btnEnter.addActionListener(e -> {
+        btnEnter.addActionListener(_ -> {
             if (input.length() == 0)
                 return;
             try {
@@ -158,7 +157,7 @@ public class AtmPanel extends JPanel {
             }
         });
 
-        btnLimit.addActionListener(e -> {
+        btnLimit.addActionListener(_ -> {
             pendingOp = Op.LIMIT;
             display.setText("Enter daily withdrawal limit:");
             input.setLength(0);
@@ -190,7 +189,7 @@ public class AtmPanel extends JPanel {
         JButton btnExit = new JButton("Exit");
 
         // Starts the op deposit and capture amount
-        btnDeposit.addActionListener(e -> {
+        btnDeposit.addActionListener(_ -> {
             pendingOp = Op.DEPOSIT;
             display.setText("Enter deposit amount:");
             input.setLength(0);
@@ -198,7 +197,7 @@ public class AtmPanel extends JPanel {
         buttonsPanel.add(btnDeposit);
 
         // Starts the op withdrawal and capture amount
-        btnWithdraw.addActionListener(e -> {
+        btnWithdraw.addActionListener(_ -> {
             pendingOp = Op.WITHDRAW;
             display.setText("Enter withdraw amount:");
             display.setFont(display.getFont().deriveFont(18f));
@@ -207,11 +206,11 @@ public class AtmPanel extends JPanel {
         buttonsPanel.add(btnWithdraw);
 
         // Displays balance according to selected account
-        btnBalance.addActionListener(e -> display.setText(String.format("%s balance: $%,.2f", accType,
+        btnBalance.addActionListener(_ -> display.setText(String.format("%s balance: $%,.2f", accType,
                 currentAccount().getBalance())));
 
         buttonsPanel.add(btnBalance);
-        btnExit.addActionListener(e -> System.exit(0));
+        btnExit.addActionListener(_ -> System.exit(0));
         buttonsPanel.add(btnExit);
         btnExit.setForeground(Color.RED);
 
@@ -244,7 +243,7 @@ public class AtmPanel extends JPanel {
         Account acc = currentAccount();
         Account.WithdrawStatus st = acc.withdraw(amount);
 
-        // Managers erros related to funds, notes available or input
+        // Managers errors related to funds, notes available or input
         switch (st) {
             case OK -> display.setText(String.format("$%,.2f withdrawn from %s.", amount, accType));
             case NEGATIVE_AMOUNT -> JOptionPane.showMessageDialog(this,
@@ -288,7 +287,7 @@ public class AtmPanel extends JPanel {
             }
             case "Net Savings" -> {
                 // fixed limit defined in model
-                acc.limitValue = 10000.00; // calls NetSavings.limit() :contentReference[oaicite:1]{index=1}
+                acc.limitValue = 10000.00; // calls NetSavings.limit()
                 display.setText(String.format(
                         "Daily limit for %s account is $%,.2f", accType, acc.limitValue));
             }

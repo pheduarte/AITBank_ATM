@@ -20,6 +20,7 @@ public abstract class Account {
     public boolean isLimited;
     public double limitValue;
     public double baseRate = 0.04;
+    public boolean receiveInterest = false;
 
     // Implement deposit capability
     public void deposit(double dep) {
@@ -58,12 +59,6 @@ public abstract class Account {
     private boolean isDispensable(double value) {
         // simplest: require multiples of 10 or 20, or your exact rule:
         return value % 20 == 0 || value % 50 == 0 || value % 100 == 0;
-    }
-
-    private boolean reachedLimit(boolean isLimited) {
-        this.isLimited = isLimited;
-
-        return false;
     }
 
     // Display account information
